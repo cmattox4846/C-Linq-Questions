@@ -399,13 +399,13 @@ namespace DatabaseFirstLINQ
                 {
                     // 2. If the user succesfully signs in
                     Console.WriteLine("Signed In!");
-                    MenuOptions();
+                    MenuOptions(userEmail);
                 }
 
             }
 
             // a. Give them a menu where they perform the following actions within the console
-            static void MenuOptions()
+             void MenuOptions(string userData)
             {
                 Console.WriteLine("Please choose an option 1 - View Shopping Cart 2 - View All Products 3 - Add Product To Shopping Cart 4 - Remove Product From Shopping Cart");
                 int choice = int.Parse(Console.ReadLine());
@@ -413,7 +413,14 @@ namespace DatabaseFirstLINQ
                 switch (choice)
                 {
                     // View the products in their shopping cart
-                    case 1: Console.WriteLine("ShoppingCart");
+                    case 1: 
+                        var productsInCart = _context.ShoppingCarts.Include(p => p.User).Include(p => p.Product).Where(p => p.User.Email == userData);
+
+
+                        foreach (ShoppingCart product in productsInCart)
+                        {
+                            Console.WriteLine($"Product Name: {product.Product.Name} Product Price: {product.Product.Price} Quantity:{product.Quantity}");
+                        }
                         break;
                     // View all products in the Products table
                     case 2:
@@ -429,7 +436,7 @@ namespace DatabaseFirstLINQ
                         break;
                     //No valid option repromt for input
                     default: Console.WriteLine("Please choose valid option!");
-                        MenuOptions();
+                        MenuOptions(userData);
                         break;
                 
                 }
