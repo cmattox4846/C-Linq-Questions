@@ -386,38 +386,48 @@ namespace DatabaseFirstLINQ
                 if (userExists == null)
                 {
                     // 3. If the user does not succesfully sign in
+                   
                     // a. Display "Invalid Email or Password"
-                    // b. Re-prompt the user for credentials
+                    
                     Console.WriteLine("Invaild Email  or password.");
+                   
+                    // b. Re-prompt the user for credentials
                     SignIn();
 
                 }
                 else if (userExists != null)
                 {
+                    // 2. If the user succesfully signs in
                     Console.WriteLine("Signed In!");
                     MenuOptions();
                 }
 
             }
 
-           static void MenuOptions()
+            // a. Give them a menu where they perform the following actions within the console
+            static void MenuOptions()
             {
                 Console.WriteLine("Please choose an option 1 - View Shopping Cart 2 - View All Products 3 - Add Product To Shopping Cart 4 - Remove Product From Shopping Cart");
                 int choice = int.Parse(Console.ReadLine());
 
                 switch (choice)
                 {
+                    // View the products in their shopping cart
                     case 1: Console.WriteLine("ShoppingCart");
                         break;
+                    // View all products in the Products table
                     case 2:
                         Console.WriteLine("All Products");
                         break;
+                    // Add a product to the shopping cart (incrementing quantity if that product is already in their shopping cart)
                     case 3:
                         Console.WriteLine("Add Product");
                         break;
+                    // Remove a product from their shopping cart
                     case 4:
                         Console.WriteLine("Remove Product");
                         break;
+                    //No valid option repromt for input
                     default: Console.WriteLine("Please choose valid option!");
                         MenuOptions();
                         break;
@@ -429,12 +439,11 @@ namespace DatabaseFirstLINQ
 
 
         
-        // 2. If the user succesfully signs in
-        // a. Give them a menu where they perform the following actions within the console
-        // View the products in their shopping cart
-        // View all products in the Products table
-        // Add a product to the shopping cart (incrementing quantity if that product is already in their shopping cart)
-        // Remove a product from their shopping cart
+        
+       
+       
+       
+       
        
 
     
