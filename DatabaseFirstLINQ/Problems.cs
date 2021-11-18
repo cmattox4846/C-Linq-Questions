@@ -419,16 +419,32 @@ namespace DatabaseFirstLINQ
 
                         foreach (ShoppingCart product in productsInCart)
                         {
-                            Console.WriteLine($"Product Name: {product.Product.Name} Product Price: {product.Product.Price} Quantity:{product.Quantity}");
+                        Console.WriteLine($"Product Name: {product.Product.Name} Product Price: {product.Product.Price} Quantity:{product.Quantity}");
                         }
                         break;
                     // View all products in the Products table
                     case 2:
-                        Console.WriteLine("All Products");
+                        var allProducts = _context.Products;
+                        foreach (var product in allProducts)
+                        {
+                            Console.WriteLine($"Product Name: {product.Name} Product Description: {product.Description} Product Price: {product.Price}");
+                        }
+
                         break;
                     // Add a product to the shopping cart (incrementing quantity if that product is already in their shopping cart)
                     case 3:
-                        Console.WriteLine("Add Product");
+                        Console.WriteLine("Name of Product to be Added");
+                        var productToBeAdded = Console.ReadLine();
+                        var productAlreadyInCart = _context.ShoppingCarts.Where(sc => sc.Product.Name.Contains(productToBeAdded)).SingleOrDefault();
+                        if (productAlreadyInCart != null)
+                        {
+                            var currentQuantity = _context.ShoppingCarts.Where(sc => sc.Product.Name == productToBeAdded).Select(sc => sc.Quantity).FirstOrDefault();
+                            currentQuantity++;
+                        } else if (productAlreadyInCart == null)
+                        { 
+                            var productInfo = _context.ShoppingCarts.Include(p => p.Product).Where(p => p.Product.Name.Contains(productToBeAdded));
+                            _context.ShoppingCarts.Add((ShoppingCart)productInfo);
+                        }
                         break;
                     // Remove a product from their shopping cart
                     case 4:
