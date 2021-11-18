@@ -24,7 +24,7 @@ namespace DatabaseFirstLINQ
             //ProblemSix();
             //ProblemSeven();
             //ProblemEight();
-            //ProblemNine();
+            ProblemNine();
             //ProblemTen();
             //ProblemEleven();
             //ProblemTwelve();
@@ -35,15 +35,12 @@ namespace DatabaseFirstLINQ
             //ProblemSeventeen();
             //ProblemEighteen();
             //ProblemNineteen();
-<<<<<<< HEAD
             //ProblemTwenty();
-            BonusOne();
-            //BonusTwo();
+            //BonusOne();
+            BonusTwo();
             //BonusThree();
 
-=======
-            ProblemTwenty();
->>>>>>> 78623984a488978af82b87d7d371ada850046260
+
         }
 
         // <><><><><><><><> R Actions (Read) <><><><><><><><><>
@@ -162,7 +159,7 @@ namespace DatabaseFirstLINQ
             // HINT: End of query will be: .Select(sc => sc.Product.Price).Sum();
             // Then print the total of the shopping cart to the console.
 
-            var productsInCart = _context.ShoppingCarts.Include(p => p.User).Include(p => p.Product).Where(p => p.User.Email == "oda@gmail.com").Select(sc => sc.Product.Price).Sum();
+            var productsInCart = _context.ShoppingCarts.Include(p => p.User).Include(p => p.Product).Where(p => p.User.Id == 2).Select(sc => sc.Product.Price).Sum();
             Console.WriteLine(productsInCart);
 
 
@@ -353,6 +350,19 @@ namespace DatabaseFirstLINQ
         {
             // Write a query that finds the total of every users shopping cart products using LINQ.
             // Display the total of each users shopping cart as well as the total of the toals to the console.
+            var usersList = _context.Users.Select(u => u.Id).ToList();
+            decimal grandtotal = 0;
+            foreach (var user in usersList)
+            {
+                var shoppingCartItems = _context.ShoppingCarts.Include(sc => sc.User).Where(sc => sc.UserId == user).Select(sc => sc.Product.Price).Sum();
+                Console.WriteLine($"Total of products: {shoppingCartItems}  User Id: {user}");
+                grandtotal += shoppingCartItems;
+                Console.WriteLine($"Running Total: {grandtotal}");
+
+            }
+
+
+
         }
 
         // BIG ONE
