@@ -23,9 +23,9 @@ namespace DatabaseFirstLINQ
             //ProblemFive();
             //ProblemSix();
             //ProblemSeven();
-            //ProblemEight();
+            ProblemEight();
             //ProblemNine();
-            ProblemTen();
+            //ProblemTen();
             //ProblemEleven();
             //ProblemTwelve();
             //ProblemThirteen();
@@ -138,7 +138,7 @@ namespace DatabaseFirstLINQ
         {
             // Write a LINQ query that retreives all of the products in the shopping cart of the user who has the email "afton@gmail.com".
             // Then print the product's name, price, and quantity to the console.
-            var productsInCart = _context.ShoppingCarts.Include(p => p.User).Include(p => p.Product).Where(p => p.User.Email == "afton@gmail.com");
+            var productsInCart = _context.ShoppingCarts.Include(p => p.User).Include(p => p.Product).Where(p => p.User.Email == "oda@gmail.com");
             
                 
             foreach (ShoppingCart product in productsInCart)
@@ -164,17 +164,7 @@ namespace DatabaseFirstLINQ
         {
             // Write a LINQ query that retreives all of the products in the shopping cart of users who have the role of "Employee".
             // Then print the user's email as well as the product's name, price, and quantity to the console.
-<<<<<<< HEAD
 
-            //var userId = _context.UserRoles.Include(u => u.Role).Include(u => u.User).Where(r => r.Role.RoleName == "Employee").Select(s => s.User.Id);
-            //var userID = _context.Users.Include(u => u.UserRoles).Include(u => u.UserRoles).Where(u => u.UserRoles.RoleId == userRoleID ).Select(s => s.id);
-            //var productsInCart = _context.ShoppingCarts.Include(p => p.User).Include(p => p.Product).Include(p => p.User.UserRoles).Where(p => p.User.UserRoles.RoleId == userRoleID);
-
-
-            //foreach (ShoppingCart product in productsInCart)
-            //{
-            //    Console.WriteLine($"Product Name: {product.Product.Name} Product Price: {product.Product.Price} Quantity:{product.Quantity}");
-            //}
 
             var userIds = _context.UserRoles.Include(u => u.Role).Include(u => u.User).Where(r => r.Role.RoleName == "Employee").Select(s => s.User.Id);
             var productsInCart = _context.ShoppingCarts.Include(p => p.User).Include(p => p.Product).Where(p => userIds.Contains(p.UserId));
@@ -183,9 +173,7 @@ namespace DatabaseFirstLINQ
             {
                 Console.WriteLine($"User's Email: {scRow.User.Email} Product Name: {scRow.Product.Name} Product Price: {scRow.Product.Price} Quantity:{scRow.Quantity}");
             }
-=======
-            
->>>>>>> a9c861d662430a5127a91c13a9db892064200da1
+
         }
 
         // <><><><><><><><> CUD (Create, Update, Delete) Actions <><><><><><><><><>
@@ -235,8 +223,22 @@ namespace DatabaseFirstLINQ
         private void ProblemFourteen()
         {
             // Add the product you create to the user we created in the ShoppingCart junction table using LINQ.
+            var productID = _context.Products.Where(p => p.Name == "Ibenez Gio Electric Guitar").Select(p =>p.Id).SingleOrDefault();
+            var userId = _context.Users.Where(u => u.Email == "oda@gmail.com").Select(u => u.Id).SingleOrDefault();
 
+            ShoppingCart newProduct = new ShoppingCart()
+            {
+                UserId = userId,
+                ProductId = productID,
+                Quantity = 1
+            };
+            _context.ShoppingCarts.Add(newProduct);
+            _context.SaveChanges();
         }
+
+
+
+    
 
         // <><> U Actions (Update) <><>
 
