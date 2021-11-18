@@ -407,7 +407,7 @@ namespace DatabaseFirstLINQ
             // a. Give them a menu where they perform the following actions within the console
              void MenuOptions(string userData)
             {
-                Console.WriteLine("Please choose an option 1 - View Shopping Cart 2 - View All Products 3 - Add Product To Shopping Cart 4 - Remove Product From Shopping Cart");
+                Console.WriteLine("Please choose an option 1 - View Shopping Cart 2 - View All Products 3 - Add Product To Shopping Cart 4 - Remove Product From Shopping Cart 5 - To Quit");
                 int choice = int.Parse(Console.ReadLine());
 
                 switch (choice)
@@ -421,6 +421,7 @@ namespace DatabaseFirstLINQ
                         {
                         Console.WriteLine($"Product Name: {product.Product.Name} Product Price: {product.Product.Price} Quantity:{product.Quantity}");
                         }
+                        MenuOptions(userData);
                         break;
                     // View all products in the Products table
                     case 2:
@@ -429,27 +430,49 @@ namespace DatabaseFirstLINQ
                         {
                             Console.WriteLine($"Product Name: {product.Name} Product Description: {product.Description} Product Price: {product.Price}");
                         }
-
+                        MenuOptions(userData);
                         break;
                     // Add a product to the shopping cart (incrementing quantity if that product is already in their shopping cart)
                     case 3:
                         Console.WriteLine("Name of Product to be Added");
                         var productToBeAdded = Console.ReadLine();
-                        var productAlreadyInCart = _context.ShoppingCarts.Where(sc => sc.Product.Name.Contains(productToBeAdded)).SingleOrDefault();
+                        var productAlreadyInCart = _context.ShoppingCarts.Include(sc => sc.Product).Include(sc => sc.User).Where(sc => sc.User.Email == userData &&  sc.Product.Name == productToBeAdded).SingleOrDefault();
                         if (productAlreadyInCart != null)
                         {
-                            var currentQuantity = _context.ShoppingCarts.Where(sc => sc.Product.Name == productToBeAdded).Select(sc => sc.Quantity).FirstOrDefault();
-                            currentQuantity++;
+                            var product = _context.ShoppingCarts.Where(sc => sc.Product.Name == productToBeAdded).FirstOrDefault();
+                            product.Quantity++;
+                            _context.SaveChanges();
                         } else if (productAlreadyInCart == null)
                         { 
-                            var productInfo = _context.ShoppingCarts.Include(p => p.Product).Where(p => p.Product.Name.Contains(productToBeAdded));
-                            _context.ShoppingCarts.Add((ShoppingCart)productInfo);
+                            var productInfo = _context.Products.Where(p => p.Name == productToBeAdded).SingleOrDefault();
+                            ShoppingCart newCartEntry = new ShoppingCart()
+                            {
+                                ProductId = productInfo.Id,
+                                UserId = _context.Users.Where(u => u.Email == userData).Select(u => u.Id).FirstOrDefault()
+                            };
+                            _context.ShoppingCarts.Add(newCartEntry);
+                            _context.SaveChanges();
                         }
+                        MenuOptions(userData);
                         break;
                     // Remove a product from their shopping cart
                     case 4:
-                        Console.WriteLine("Remove Product");
+                        Console.WriteLine("Name of Product to be Removed");
+                        var productToBeRemoved = Console.ReadLine();
+                        var itemToRemove = _context.ShoppingCarts.Where(sc => sc.Product.Name == productToBeRemoved).SingleOrDefault();
+
+                        _context.ShoppingCarts.Remove(itemToRemove);
+                        _context.SaveChanges();
+
+
+                        MenuOptions(userData); 
                         break;
+                    case 5:
+                        Console.WriteLine("Bye!!");
+
+                        
+                        break;
+
                     //No valid option repromt for input
                     default: Console.WriteLine("Please choose valid option!");
                         MenuOptions(userData);
